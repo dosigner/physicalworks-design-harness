@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "AfterAgent": [
+      {
+        "hooks": [
+          {
+            "name": "v5-harness-completion",
+            "type": "command",
+            "command": "node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs",
+            "timeout": 30000
+          }
+        ]
+      }
+    ]
+  }
+}

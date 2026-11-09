@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "11px",
+        "files": ["*"],
+        "reason": "DESIGN.md explicitly permits 11px for dense metadata labels, legends, and tags."
+      }
+    ]
+  }
+}

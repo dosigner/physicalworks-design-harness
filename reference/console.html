@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="x2-ui-build" content="slam-map-refine-20261109-v2">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="X2 로봇의 관측 기록, 좌표계, 지도와 알고리즘 실험을 함께 검토하는 로컬 콘솔">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/console.css">
+  <link rel="stylesheet" href="/locomotion.css">
+  <link rel="stylesheet" href="/lab.css">
+  <link rel="stylesheet" href="/upper_body.css">
+  <link rel="stylesheet" href="/flow_n8n.css">
+  <link rel="stylesheet" href="/physicalworks_v5.css">
+  <title>X2 관제 및 실험 콘솔</title>
+  <script type="module" src="/console.js"></script>
+</head>
+<body data-mode="loading">
+  <!-- Lucide source and license: assets/workflow/NOTICE.md. -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="console-icon-sprite" width="0" height="0" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="x2-nav-icon-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="24" y2="0">
+  <stop offset="0%" />
+  <stop offset="50%" />
+  <stop offset="100%" />
+</linearGradient>
+<symbol id="x2-lucide-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
+</svg</symbol>
+<symbol id="x2-lucide-zoom-in" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6m-3-3h6"/></symbol>
+<symbol id="x2-lucide-zoom-out" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M8 11h6"/></symbol>
+<symbol id="x2-lucide-scan" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m8 0h3a2 2 0 0 0 2-2v-3"/></symbol>
+<symbol id="x2-lucide-maximize-2" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+<symbol id="x2-lucide-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14" />
+  <path d="m19 12-7 7-7-7" /></symbol>
+<symbol id="x2-lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7" />
+  <path d="M19 12H5" /></symbol>
+<symbol id="x2-lucide-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14" />
+  <path d="m12 5 7 7-7 7" /></symbol>
+<symbol id="x2-lucide-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7" />
+  <path d="M12 19V5" /></symbol>
+<symbol id="x2-lucide-camera" viewBox="0 0 24 24"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" />
+  <circle cx="12" cy="13" r="3" /></symbol>
+<symbol id="x2-lucide-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></symbol>
+<symbol id="x2-lucide-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
+<symbol id="x2-lucide-chevron-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6" /></symbol>
+<symbol id="x2-lucide-download" viewBox="0 0 24 24"><path d="M12 15V3" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+  <path d="m7 10 5 5 5-5" /></symbol>
+<symbol id="x2-lucide-ellipsis" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1" />
+  <circle cx="19" cy="12" r="1" />
+  <circle cx="5" cy="12" r="1" /></symbol>
+<symbol id="x2-lucide-face-slightly-smiling" viewBox="0 0 24 24"><path d="M15 10V9" />
+  <path d="M16.472 15a6 6 0 01-8.943 0" />
+  <path d="M9 10V9" />
+  <circle cx="12" cy="12" r="10" /></symbol>
+<symbol id="x2-lucide-file-text" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="M10 9H8" />
+  <path d="M16 13H8" />
+  <path d="M16 17H8" /></symbol>
+<symbol id="x2-lucide-flask-conical" viewBox="0 0 24 24"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" />
+  <path d="M6.453 15h11.094" />
+  <path d="M8.5 2h7" /></symbol>
+<symbol id="x2-lucide-folder-open" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2" />
+</svg</symbol>
+<symbol id="x2-lucide-layout-dashboard" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1" />
+  <rect width="7" height="5" x="14" y="3" rx="1" />
+  <rect width="7" height="9" x="14" y="12" rx="1" />
+  <rect width="7" height="5" x="3" y="16" rx="1" /></symbol>
+<symbol id="x2-lucide-library" viewBox="0 0 24 24"><path d="m16 6 4 14" />
+  <path d="M12 6v14" />
+  <path d="M8 8v12" />
+  <path d="M4 4v16" />
+</svg</symbol>
+<symbol id="x2-lucide-list-video" viewBox="0 0 24 24"><path d="M21 5H3" />
+  <path d="M10 12H3" />
+  <path d="M10 19H3" />
+  <path d="M15 12.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997a1 1 0 0 1-1.517-.86z" /></symbol>
+<symbol id="x2-lucide-locate-fixed" viewBox="0 0 24 24"><line x1="2" x2="5" y1="12" y2="12" />
+  <line x1="19" x2="22" y1="12" y2="12" />
+  <line x1="12" x2="12" y1="2" y2="5" />
+  <line x1="12" x2="12" y1="19" y2="22" />
+  <circle cx="12" cy="12" r="7" />
+  <circle cx="12" cy="12" r="3" />
+</svg</symbol>
+<symbol id="x2-lucide-lock-keyhole" viewBox="0 0 24 24"><circle cx="12" cy="16" r="1" />
+  <rect x="3" y="10" width="18" height="12" rx="2" />
+  <path d="M7 10V7a5 5 0 0 1 10 0v3" /></symbol>
+<symbol id="x2-lucide-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+  <path d="M15 5.764v15" />
+  <path d="M9 3.236v15" /></symbol>
+<symbol id="x2-lucide-menu" viewBox="0 0 24 24"><path d="M4 5h16" />
+  <path d="M4 12h16" />
+  <path d="M4 19h16" /></symbol>
+<symbol id="x2-lucide-messages-square" viewBox="0 0 24 24"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+  <path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1" />
+</svg</symbol>
+<symbol id="x2-lucide-moon" viewBox="0 0 24 24"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol>
+<symbol id="x2-lucide-move" viewBox="0 0 24 24"><path d="M12 2v20" />
+  <path d="m15 19-3 3-3-3" />
+  <path d="m19 9 3 3-3 3" />
+  <path d="M2 12h20" />
+  <path d="m5 9-3 3 3 3" />
+  <path d="m9 5 3-3 3 3" /></symbol>
+<symbol id="x2-lucide-pause" viewBox="0 0 24 24"><rect x="14" y="3" width="5" height="18" rx="1" />
+  <rect x="5" y="3" width="5" height="18" rx="1" /></symbol>
+<symbol id="x2-lucide-person-standing" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1" />
+  <path d="m9 20 3-6 3 6" />
+  <path d="m6 8 6 2 6-2" />
+  <path d="M12 10v4" /></symbol>
+<symbol id="x2-lucide-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" /></symbol>
+<symbol id="x2-lucide-plus" viewBox="0 0 24 24"><path d="M5 12h14" />
+  <path d="M12 5v14" /></symbol>
+<symbol id="x2-lucide-refresh-cw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+  <path d="M21 3v5h-5" />
+  <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+  <path d="M8 16H3v5" /></symbol>
+<symbol id="x2-lucide-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+  <path d="M3 3v5h5" /></symbol>
+<symbol id="x2-lucide-rotate-cw" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+  <path d="M21 3v5h-5" /></symbol>
+<symbol id="x2-lucide-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="3" />
+  <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" />
+  <circle cx="18" cy="5" r="3" />
+</svg</symbol>
+<symbol id="x2-lucide-skip-back" viewBox="0 0 24 24"><path d="M17.971 4.285A2 2 0 0 1 21 6v12a2 2 0 0 1-3.029 1.715l-9.997-5.998a2 2 0 0 1-.003-3.432z" />
+  <path d="M3 20V4" /></symbol>
+<symbol id="x2-lucide-skip-forward" viewBox="0 0 24 24"><path d="M21 4v16" />
+  <path d="M6.029 4.285A2 2 0 0 0 3 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z" /></symbol>
+<symbol id="x2-lucide-sliders-horizontal" viewBox="0 0 24 24"><path d="M10 5H3" />
+  <path d="M12 19H3" />
+  <path d="M14 3v4" />
+  <path d="M16 17v4" />
+  <path d="M21 12h-9" />
+  <path d="M21 19h-5" />
+  <path d="M21 5h-7" />
+  <path d="M8 10v4" />
+  <path d="M8 12H3" /></symbol>
+<symbol id="x2-lucide-sparkles" viewBox="0 0 24 24"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
+  <path d="M20 2v4" />
+  <path d="M22 4h-4" />
+  <circle cx="4" cy="20" r="2" /></symbol>
+<symbol id="x2-lucide-split" viewBox="0 0 24 24"><path d="M16 3h5v5" />
+  <path d="M8 3H3v5" />
+  <path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3" />
+  <path d="m15 9 6-6" /></symbol>
+<symbol id="x2-lucide-square-pen" viewBox="0 0 24 24"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+  <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+</svg</symbol>
+<symbol id="x2-lucide-timer" viewBox="0 0 24 24"><line x1="10" x2="14" y1="2" y2="2" />
+  <line x1="12" x2="15" y1="14" y2="11" />
+  <circle cx="12" cy="14" r="8" /></symbol>
+<symbol id="x2-lucide-upload" viewBox="0 0 24 24"><path d="M12 3v12" />
+  <path d="m17 8-5-5-5 5" />
+  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></symbol>
+<symbol id="x2-lucide-workflow" viewBox="0 0 24 24"><rect width="8" height="8" x="3" y="3" rx="2" />
+  <path d="M7 11v4a2 2 0 0 0 2 2h4" />
+  <rect width="8" height="8" x="13" y="13" rx="2" /></symbol>
+<symbol id="x2-lucide-x" viewBox="0 0 24 24"><path d="M18 6 6 18" />
+  <path d="m6 6 12 12" /></symbol>
+</defs></svg>
+  <a class="skip-link" href="#workspace">본문으로 건너뛰기</a>
+  <header class="app-header">
+    <button id="navToggle" class="icon-button nav-toggle" aria-label="탐색 메뉴 열기" aria-expanded="false" aria-controls="navigation"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="menu" aria-hidden="true" focusable="false"><use href="#x2-lucide-menu"/></svg></button>
+    <a class="brand" href="#overview" aria-label="PhysicalWorks X2 관제 및 실험 콘솔 홈"><span class="pw-v5-mark" aria-hidden="true"></span><span class="pw-v5-wordmark">PhysicalWorks</span><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M4 4h7v7H4zM17 4h7v7h-7zM4 17h7v7H4zM17 17h7v7h-7z"/></svg><strong>X2</strong><span>관제 및 실험 콘솔</span></a>
+    <button id="connectButton" class="connection-trigger" type="button" popovertarget="connectionPanel" aria-haspopup="dialog" aria-expanded="false" aria-controls="connectionPanel" data-state="unknown"><span class="connection-header-signals"><span id="connectionSSHSignal" class="connection-circle" data-symbol="?" data-state="unknown" aria-label="SSH 인증: 확인 전">SSH</span><span id="connectionLiveSignal" class="connection-circle" data-symbol="?" data-state="unknown" aria-label="상태 데이터: 확인 전">상태</span><span id="connectionCameraSignal" class="connection-circle" data-symbol="?" data-state="unknown" aria-label="카메라: 확인 전">카메라</span><span id="connectionBatterySignal" class="connection-battery" data-state="unknown" aria-label="배터리: 확인 전" title="배터리: 확인 전">—</span></span><span id="connectionLabel" role="status" aria-live="polite">X2 상태 확인 중</span><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="chevron-down" aria-hidden="true" focusable="false"><use href="#x2-lucide-chevron-down"/></svg></button>
+    <button id="themeToggle" class="icon-button theme-toggle" type="button" aria-label="다크 모드로 전환" aria-pressed="false" title="다크 모드로 전환"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="moon" aria-hidden="true" focusable="false"><use href="#x2-lucide-moon"/></svg></button>
+  </header>
+  <aside class="navigation" id="navigation" aria-label="주 탐색">
+    <div class="nav-scroll">
+      <nav id="navItems"></nav>
+      <div class="nav-footer"><span class="status-dot"></span><strong id="environmentLabel">서버 확인 중</strong><p id="collectorStatus">실기기 수신 상태 확인 중</p><span class="version">Console 0.1.0 / AimDK 1.0.0 기준</span></div>
+    </div>
+  </aside>
+  <div class="app-body">
+    <section class="context-bar" aria-label="로봇 상태 요약">
+      <div class="context-metadata" hidden><span id="robotLabel">자료 불러오는 중</span><span id="sourceTag">불러오는 중</span><span id="sessionSource">로봇 연결 없음</span></div>
+      <label class="session-context" id="sessionPicker" for="sessionSelect" hidden><span class="field-label">데이터 세션</span><select id="sessionSelect" aria-describedby="sessionSource"><option>세션 목록 불러오는 중</option></select></label>
+      <button class="button ghost compact" id="importButton" hidden>세션 가져오기<svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="upload" aria-hidden="true" focusable="false"><use href="#x2-lucide-upload"/></svg></button>
+      <input type="file" id="sessionFile" accept="application/json,.json" hidden>
+      <div class="status-summary" role="group" aria-label="선택한 자료의 상태 요약">
+        <div class="summary-item"><span class="field-label">수집 연결</span><span id="summaryTransport" class="summary-value"><span class="tag">확인 전</span><small class="number">수신 경과 미수신</small></span></div>
+        <div class="summary-item"><span class="field-label">제조사 시스템</span><span id="summarySystem" class="summary-value"><strong>미확인</strong><span class="tag">미수신</span></span></div>
+        <div class="summary-item"><span class="field-label">로봇 동작 상태</span><span id="summaryMcMode" class="summary-value"><strong>미확인</strong><span class="tag">미수신</span></span></div>
+        <div class="summary-item"><span class="field-label">조작 신호 출처</span><span id="summaryInputSource" class="summary-value"><strong>미확인</strong><span class="tag">미수신</span></span></div>
+        <div class="summary-item"><span class="field-label">제어 상태</span><span class="header-lock"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="lock-keyhole" aria-hidden="true" focusable="false"><use href="#x2-lucide-lock-keyhole"/></svg>로봇 제어 잠금</span></div>
+      </div>
+    </section>
+    <section id="estopRemoteBanner" class="message warning estop-remote-banner" aria-labelledby="estopRemoteTitle" hidden>
+      <div class="estop-remote-content"><strong id="estopRemoteTitle" role="status" aria-live="polite">무선 비상정지 리모컨 상태 확인 중</strong><p id="estopRemoteDescription">진단 수신을 기다리고 있습니다.</p><p id="estopRemoteMeta" class="estop-remote-meta"></p></div>
+      <a class="button ghost compact" href="#sessions">진단 상세 보기</a>
+    </section>
+    <div id="globalMessage" class="message error" role="alert" hidden></div>
+    <main id="workspace" tabindex="-1">
+      <div class="page-heading"><div><h1 id="pageTitle">운용 개요</h1><p id="pageDescription">선택한 기록의 상태와 유효 여부를 확인합니다.</p></div><button class="button secondary compact" id="exportSession">세션 내보내기<svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="download" aria-hidden="true" focusable="false"><use href="#x2-lucide-download"/></svg></button></div>
+      <div class="source-notice" id="sourceNotice"><span class="tag warning">연결 없음</span><p>로컬 기록만 확인합니다. 로봇에 명령을 보내지 않습니다.</p></div>
+      <div id="pageContent"><div class="loading-state" role="status"><span class="skeleton"></span><p>세션 목록과 데이터 형식을 확인하고 있습니다.</p></div></div>
+    </main>
+    <footer class="replay-dock" id="replayDock" aria-label="공통 세션 재생" hidden>
+      <div class="replay-controls"><button class="icon-button" id="previousFrame" aria-label="이전 프레임"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="skip-back" aria-hidden="true" focusable="false"><use href="#x2-lucide-skip-back"/></svg></button><button class="icon-button play-button" id="playPause" aria-label="재생"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="play" aria-hidden="true" focusable="false"><use href="#x2-lucide-play"/></svg></button><button class="icon-button" id="nextFrame" aria-label="다음 프레임"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="skip-forward" aria-hidden="true" focusable="false"><use href="#x2-lucide-skip-forward"/></svg></button></div>
+      <div class="playhead"><div class="playhead-caption"><strong id="replayState">불러오는 중</strong><span id="replayTime" class="number">00:00.0 / 00:00.0</span></div><input type="range" min="0" max="1" value="0" step="any" id="playhead" aria-label="세션 재생 위치" aria-valuetext="0초"></div>
+      <label class="speed-control" for="replaySpeed"><span class="field-label">재생 속도</span><select id="replaySpeed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+      <a class="replay-detail" href="#sessions">세션 상세<svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="arrow-right" aria-hidden="true" focusable="false"><use href="#x2-lucide-arrow-right"/></svg></a>
+    </footer>
+  </div>
+  <dialog id="detailDialog" aria-labelledby="detailTitle"><div class="dialog-heading"><h2 id="detailTitle">상세 정보</h2><button class="icon-button" id="closeDetail" aria-label="상세 정보 닫기"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="x" aria-hidden="true" focusable="false"><use href="#x2-lucide-x"/></svg></button></div><div id="detailBody" class="dialog-body"></div><div class="dialog-footer"><button class="button secondary" id="exportDetail">이 항목 JSON 내보내기</button><button class="button primary" id="doneDetail">확인</button></div></dialog>
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>

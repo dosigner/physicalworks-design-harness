@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
