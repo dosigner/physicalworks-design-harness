@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" width="1200" height="660" role="img" aria-label="PhysicalWorks v5 Design System and Opus 5.5 Core-Freeze Harness Architecture">
+  <defs>
+    <linearGradient id="pw-brand-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#27B9E9"/>
+      <stop offset="50%" stop-color="#7854FF"/>
+      <stop offset="100%" stop-color="#DB69F1"/>
+    </linearGradient>
+    <style>
+      .bg { fill: #0a0a0a; }
+      .surface { fill: #0a0a0a; stroke: #2e2e2e; stroke-width: 1; }
+      .inset { fill: #111111; stroke: #2e2e2e; stroke-width: 1; }
+      .raised { fill: #1a1a1a; stroke: #666666; stroke-width: 1; }
+      .hairline { stroke: #2e2e2e; stroke-width: 1; }
+      .title { fill: #ededed; font: 600 18px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: -0.02em; }
+      .subtitle { fill: #ededed; font: 500 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .body { fill: #a1a1a1; font: 400 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .mono { fill: #ededed; font: 500 12px ui-monospace, "SFMono-Regular", Menlo, monospace; }
+      .mono-muted { fill: #a1a1a1; font: 400 11px ui-monospace, "SFMono-Regular", Menlo, monospace; }
+      .badge-ok { fill: #123320; stroke: #72df9b; stroke-width: 1; }
+      .badge-ok-text { fill: #72df9b; font: 500 11px ui-monospace, monospace; }
+      .badge-warn { fill: #3c2b0a; stroke: #ffca62; stroke-width: 1; }
+      .badge-warn-text { fill: #ffca62; font: 500 11px ui-monospace, monospace; }
+      .badge-err { fill: #411b1b; stroke: #ff9999; stroke-width: 1; }
+      .badge-err-text { fill: #ff9999; font: 500 11px ui-monospace, monospace; }
+      .icon { fill: none; stroke: #ededed; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+      .icon-muted { fill: none; stroke: #a1a1a1; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <!-- Canvas -->
+  <rect width="1200" height="660" class="bg"/>
+
+  <!-- Outer Frame -->
+  <rect x="24" y="20" width="1152" height="620" rx="12" class="surface"/>
+
+  <!-- 1. TOP GLOBAL HEADER (.app-header: Brand + Status ONLY, Zero Route Links) -->
+  <rect x="24" y="20" width="1152" height="64" rx="12" class="inset"/>
+  <line x1="24" y1="84" x2="1176" y2="84" class="hairline"/>
+
+  <!-- Brand Mark & Wordmark -->
+  <rect x="44" y="39" width="26" height="26" rx="6" fill="url(#pw-brand-grad)"/>
+  <text x="80" y="57" class="title">PhysicalWorks</text>
+  <rect x="220" y="40" width="276" height="24" rx="12" class="badge-ok"/>
+  <text x="234" y="56" class="badge-ok-text">TOP HEADER = BRAND + STATUS ONLY</text>
+
+  <!-- Right Status Trigger (#connectButton) & Theme Toggle -->
+  <rect x="820" y="34" width="286" height="36" rx="6" class="raised"/>
+  <circle cx="840" cy="52" r="5" fill="#72df9b"/>
+  <text x="854" y="56" class="mono">SSH · LIVE · CAM · 94%</text>
+  <text x="1028" y="56" class="mono-muted">Popover ▾</text>
+  <rect x="1116" y="34" width="40" height="36" rx="6" class="surface"/>
+  <path d="M1141 55a6 6 0 1 1-6-8 4.5 4.5 0 0 0 6 8z" class="icon"/>
+
+  <!-- 2. LEFT HOVER-REVEAL NAVIGATION RAIL (64px <-> 240px Damped Spring) -->
+  <rect x="24" y="84" width="260" height="556" class="surface"/>
+  <line x1="284" y1="84" x2="284" y2="640" class="hairline"/>
+  <!-- 12px Right Transparent Pointer Buffer Zone -->
+  <rect x="284" y="84" width="14" height="556" fill="#68a8ff" fill-opacity="0.12"/>
+  <line x1="298" y1="84" x2="298" y2="640" stroke="#68a8ff" stroke-dasharray="4 4" stroke-width="1"/>
+  <text x="291" y="360" fill="#68a8ff" font-family="ui-monospace, monospace" font-size="10" text-anchor="middle" transform="rotate(-90 291 360)">::after 12px Hover Buffer</text>
+
+  <!-- 64px Collapsed Axis Guide -->
+  <line x1="88" y1="84" x2="88" y2="540" stroke="#2e2e2e" stroke-dasharray="3 3"/>
+  <text x="56" y="106" class="mono-muted" text-anchor="middle">64px</text>
+  <text x="184" y="106" class="mono-muted" text-anchor="middle">↔ 240px Spring (330ms)</text>
+
+  <!-- Active Nav Item (aria-current="page") -->
+  <rect x="32" y="120" width="244" height="44" rx="6" fill="#1a1a1a"/>
+  <!-- 3px Left Monochrome Bar -->
+  <rect x="32" y="131" width="3" height="22" rx="1.5" fill="#ededed"/>
+  <!-- 18x18 Lucide Icon (layout-dashboard) centered at X=56 -->
+  <rect x="47" y="133" width="7" height="9" rx="1" class="icon"/>
+  <rect x="57" y="133" width="7" height="5" rx="1" class="icon"/>
+  <rect x="57" y="141" width="7" height="9" rx="1" class="icon"/>
+  <rect x="47" y="145" width="7" height="5" rx="1" class="icon"/>
+  <text x="77" y="147" class="subtitle">운용 개요 (Overview)</text>
+
+  <!-- Nav Item 2 (activity) -->
+  <g transform="translate(0, 50)">
+    <path d="M64 142h-3l-2 6-4-12-2 6h-3" class="icon-muted"/>
+    <text x="77" y="147" class="body">실시간 관측 (Telemetry)</text>
+  </g>
+
+  <!-- Nav Item 3 (map) -->
+  <g transform="translate(0, 100)">
+    <polygon points="47,135 53,132 59,135 65,132 65,148 59,151 53,148 47,151" class="icon-muted"/>
+    <text x="77" y="147" class="body">공간 · 지도 (SLAM Maps)</text>
+  </g>
+
+  <!-- Nav Item 4 (move) -->
+  <g transform="translate(0, 150)">
+    <path d="M56 133v18M47 142h18" class="icon-muted"/>
+    <text x="77" y="147" class="body">이동 제어 (Locomotion)</text>
+  </g>
+
+  <!-- Nav Item 5 (workflow) with active dot -->
+  <g transform="translate(0, 200)">
+    <rect x="47" y="133" width="7" height="7" rx="1.5" class="icon-muted"/>
+    <rect x="57" y="143" width="7" height="7" rx="1.5" class="icon-muted"/>
+    <path d="M50.5 140v4.5h6.5" class="icon-muted"/>
+    <circle cx="64" cy="132" r="3.5" fill="#ededed"/>
+    <text x="77" y="147" class="body">워크플로우 (Flow)</text>
+  </g>
+
+  <!-- Physics Formula Box in Rail -->
+  <rect x="36" y="390" width="236" height="136" rx="8" class="inset"/>
+  <text x="48" y="412" class="mono">7-Point Rail Physics</text>
+  <text x="48" y="432" class="mono-muted">• 8+15+18+15+8 = 64px Lock</text>
+  <text x="48" y="450" class="mono-muted">• Open: 330ms linear(...) ~2%</text>
+  <text x="48" y="468" class="mono-muted">• Close: 100ms + 230ms bezier</text>
+  <text x="48" y="486" class="mono-muted">• Stagger: 55ms (-5px → 0)</text>
+  <text x="48" y="504" class="mono-muted">• Esc: data-hover-dismissed</text>
+
+  <!-- Nav Footer -->
+  <line x1="24" y1="546" x2="284" y2="546" class="hairline"/>
+  <circle cx="44" cy="568" r="4" fill="#72df9b"/>
+  <text x="56" y="572" class="subtitle">PhysicalWorks v5.0</text>
+  <text x="44" y="594" class="body">Lucide 24×24 → 18×18px (1.5px)</text>
+  <text x="44" y="614" class="mono-muted">tabular-nums · zero-shadow</text>
+
+  <!-- 3. STICKY CONTEXT BAR (.context-bar: 5-Column Read-Only Status Strip) -->
+  <rect x="298" y="84" width="878" height="64" class="inset"/>
+  <line x1="298" y1="148" x2="1176" y2="148" class="hairline"/>
+  <text x="320" y="108" class="mono-muted">수집 연결</text>
+  <text x="320" y="130" class="mono">LIVE (0.2s)</text>
+  <text x="490" y="108" class="mono-muted">제조사 시스템</text>
+  <text x="490" y="130" class="mono">NORMAL</text>
+  <text x="660" y="108" class="mono-muted">동작 상태 (MC)</text>
+  <text x="660" y="130" class="mono">LOCOMOTION_ARMED</text>
+  <text x="860" y="108" class="mono-muted">조작 신호 출처</text>
+  <text x="860" y="130" class="mono">CONSOLE_LEASE</text>
+  <text x="1030" y="108" class="mono-muted">코어 보호 잠금</text>
+  <text x="1030" y="130" class="badge-ok-text">CORE-FREEZE ON</text>
+
+  <!-- 4. MAIN WORKSPACE: 1px Hairline Bento + 3-Agent Opus 5.5 Harness Pipeline -->
+  <!-- Panel 1: 3-Agent Orchestration & Core-Freeze Harness -->
+  <rect x="320" y="170" width="832" height="220" rx="12" class="surface"/>
+  <line x1="320" y1="218" x2="1152" y2="218" class="hairline"/>
+  <text x="344" y="200" class="subtitle">Opus 5.5 Core-Freeze Harness &amp; 3-Agent Orchestration Pipeline</text>
+  <!-- Segmented Local Switcher in .panel-head -->
+  <rect x="968" y="180" width="164" height="28" rx="6" class="inset"/>
+  <rect x="971" y="183" width="80" height="22" rx="4" class="raised"/>
+  <text x="1011" y="198" class="mono" text-anchor="middle">Pipeline</text>
+  <text x="1090" y="198" class="mono-muted" text-anchor="middle">Invariants</text>
+
+  <!-- 1px Hairline Bento 3 Columns inside Panel 1 -->
+  <line x1="597" y1="218" x2="597" y2="390" class="hairline"/>
+  <line x1="874" y1="218" x2="874" y2="390" class="hairline"/>
+
+  <!-- Agent 1 -->
+  <rect x="340" y="234" width="110" height="22" rx="11" class="badge-warn"/>
+  <text x="395" y="249" class="badge-warn-text" text-anchor="middle">PHASE 1 · READ</text>
+  <text x="340" y="276" class="subtitle">1-core-contract-mapper</text>
+  <text x="340" y="298" class="body">• tools: Read, Glob, Grep</text>
+  <text x="340" y="318" class="body">• 동결할 API/Store/DOM ID 스냅샷</text>
+  <text x="340" y="338" class="body">• 상단 Nav → 좌측 Rail 이관 매핑</text>
+  <text x="340" y="358" class="mono-muted">Zero Write Permission</text>
+
+  <!-- Agent 2 -->
+  <rect x="617" y="234" width="124" height="22" rx="11" class="badge-ok"/>
+  <text x="679" y="249" class="badge-ok-text" text-anchor="middle">PHASE 2 · SURGEON</text>
+  <text x="617" y="276" class="subtitle">2-v5-shell-and-rail-surgeon</text>
+  <text x="617" y="298" class="body">• --v5-* 라이트/다크 토큰 주입</text>
+  <text x="617" y="318" class="body">• 64↔240px 스프링 레일 &amp; 1px Bento</text>
+  <text x="617" y="338" class="body">• Lucide (lucide.dev) 18×18 스프라이트</text>
+  <text x="617" y="358" class="mono-muted">PreToolUse: guard_core_freeze.mjs</text>
+
+  <!-- Agent 3 -->
+  <rect x="894" y="234" width="140" height="22" rx="11" class="badge-err"/>
+  <text x="964" y="249" class="badge-err-text" text-anchor="middle">PHASE 3 · GATEKEEPER</text>
+  <text x="894" y="276" class="subtitle">3-harness-gatekeeper</text>
+  <text x="894" y="298" class="body">• verify_v5_harness.mjs (10 Checks)</text>
+  <text x="894" y="318" class="body">• Core Git Diff = 0건 전수 감사</text>
+  <text x="894" y="338" class="body">• 위반 시 Exit Code 2 즉시 롤백</text>
+  <text x="894" y="358" class="mono-muted">PostToolUse &amp; Stop Auto-Hook</text>
+
+  <!-- Panel 2: 1px Hairline Bento Surface & Token Matrix -->
+  <rect x="320" y="410" width="832" height="208" rx="12" class="surface"/>
+  <line x1="320" y1="454" x2="1152" y2="454" class="hairline"/>
+  <text x="344" y="438" class="subtitle">Zero-Chroma 3-Tier Surface Hierarchy &amp; Anti-Slop Invariants (1px Hairline Bento)</text>
+
+  <line x1="597" y1="454" x2="597" y2="618" class="hairline"/>
+  <line x1="874" y1="454" x2="874" y2="618" class="hairline"/>
+
+  <!-- Bento Cell A -->
+  <text x="340" y="482" class="mono">Surface Tokens (Light / Dark)</text>
+  <text x="340" y="506" class="mono-muted">--v5-canvas:   #fafafa / #0a0a0a</text>
+  <text x="340" y="526" class="mono-muted">--v5-inset:    #fafafa / #111111</text>
+  <text x="340" y="546" class="mono-muted">--v5-raised:   #f2f2f2 / #1a1a1a</text>
+  <text x="340" y="566" class="mono-muted">--v5-border:   #e5e5e5 / #2e2e2e</text>
+  <text x="340" y="586" class="mono-muted">--v5-focus:    #005bc4 / #68a8ff</text>
+
+  <!-- Bento Cell B -->
+  <text x="617" y="482" class="mono">Controls &amp; Ergonomics</text>
+  <rect x="617" y="496" width="116" height="36" rx="6" fill="#ededed"/>
+  <text x="675" y="518" fill="#0a0a0a" font-family="-apple-system, sans-serif" font-size="12" font-weight="600" text-anchor="middle">.button.primary</text>
+  <rect x="743" y="496" width="110" height="36" rx="6" class="surface" stroke="#666666"/>
+  <text x="798" y="518" class="mono" text-anchor="middle">.secondary</text>
+  <text x="617" y="556" class="body">• Min-height: 44px · Radius: 6px</text>
+  <text x="617" y="576" class="body">• Hover transform: none · shadow: none</text>
+  <text x="617" y="596" class="body">• All numerals: tabular-nums</text>
+
+  <!-- Bento Cell C -->
+  <text x="894" y="482" class="mono">Core-Freeze Control Params</text>
+  <text x="894" y="506" class="body">1. PreToolUse Exit Code 2 Blocker</text>
+  <text x="894" y="526" class="body">2. Subagent tools: Read-Only Split</text>
+  <text x="894" y="546" class="body">3. --effort medium + Negative Rules</text>
+  <text x="894" y="566" class="body">4. 10-Invariant verify_v5_harness</text>
+  <text x="894" y="592" class="badge-ok-text">✔ ALL 10 INVARIANTS VERIFIED</text>
+</svg>
