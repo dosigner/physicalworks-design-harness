@@ -1,0 +1,14 @@
+{
+  "name": "physicalworks-design-harness",
+  "owner": {
+    "name": "dosigner"
+  },
+  "description": "PhysicalWorks v5 design system harness for Claude Code.",
+  "plugins": [
+    {
+      "name": "physicalworks-design-harness",
+      "source": "./",
+      "description": "Core-Freeze guard, v5 design verifier, 3-agent pipeline and design skills."
+    }
+  ]
+}

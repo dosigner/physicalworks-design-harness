@@ -1,13 +1,26 @@
 {
   "hooks": {
-    "PostToolUse": [
+    "PreToolUse": [
       {
-        "matcher": "Edit|Write|apply_patch",
+        "matcher": "Bash|apply_patch|Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs",
+            "command": "node \"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs\"",
             "timeout": 10,
+            "statusMessage": "Core-Freeze guard"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "apply_patch|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs\" --hook",
+            "timeout": 15,
             "statusMessage": "Checking PhysicalWorks v5 Design Harness"
           }
         ]
@@ -18,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs",
+            "command": "node \"$(git rev-parse --show-toplevel 2>/dev/null || pwd)/.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs\" --hook",
             "timeout": 30,
             "statusMessage": "Design & Left-Rail Harness Gate"
           }

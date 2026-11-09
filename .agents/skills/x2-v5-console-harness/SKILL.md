@@ -9,7 +9,7 @@ description: >-
 
 # X2 Console v5 Design & Harness Engineering Skill
 
-This skill defines the **end-to-end execution pipeline** and **automated verification harness** for building, refactoring, or porting interfaces to the **Geist × PhysicalWorks v5 Design System** (`src/x2_teleop_dashboard/DESIGN.md`).
+This skill defines the **end-to-end execution pipeline** and **automated verification harness** for building, refactoring, or porting interfaces to the **Geist × PhysicalWorks v5 Design System** (the `design` path in the target project's `harness.config.json`, `DESIGN.md` by default).
 
 ---
 
@@ -17,13 +17,18 @@ This skill defines the **end-to-end execution pipeline** and **automated verific
 
 Whenever a UI creation, redesign, or porting task is requested, execute these 5 stages in strict order:
 
+### Stage 0: Target Lock (`harness.config.json`)
+1. The gates read the target project's files from `harness.config.json` at the project root: `design`, `html` (`.html`, `.jsx` or `.tsx` shell files), `css`, `js`, `header.requiredIds`, `icons` (`{"mode": "sprite", "prefix": "x2-lucide-"}` or `{"mode": "package"}` for `lucide-react` and similar), `protectedPatterns` and `allowPatterns`.
+2. If the file is missing, create it once from the Phase 1 core-contract map. After creation only a human edits it: `guard_core_freeze.mjs` blocks agent edits so an agent cannot widen `allowPatterns` or point the gates at the bundled reference.
+3. `reference/` (installed under `.agents/skills/x2-v5-console-harness/reference/`) is source material to port from. Never list it in `harness.config.json` of a target project.
+
 ### Stage 1: Spec Lock & Context Initialization
-1. Read [`src/x2_teleop_dashboard/DESIGN.md`](../../../src/x2_teleop_dashboard/DESIGN.md) first. Treat its YAML frontmatter and Sections 1–8 as normative law.
-2. Run the Impeccable context loader once per session if available:
+1. Read the `design` file from `harness.config.json` first. Treat its YAML frontmatter and Sections 1–8 as normative law.
+2. Run the Impeccable context loader once per session if available, with the first `html` entry as the target:
    ```bash
-   ~/.gemini/skills/impeccable/scripts/impeccable context --target src/x2_teleop_dashboard/console.html
+   ~/.gemini/skills/impeccable/scripts/impeccable context --target <html entry from harness.config.json>
    ```
-3. If operating on port `8908`, read `src/x2_teleop_dashboard/RESTART_COORDINATION.md` before touching any running server process.
+3. If the target project documents server-restart or shared-port coordination, follow it before touching a running server process.
 
 ### Stage 2: Top-to-Left Navigation Migration (Structural Diet)
 1. **Audit Top Bars (`.app-header`, `.context-bar`, `<header>`)**:
@@ -61,10 +66,7 @@ Run the deterministic harness verifier after every CSS/HTML/JS edit:
 ```bash
 node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs
 ```
-And run the locomotion/design unit test suite:
-```bash
-node --test src/x2_teleop_dashboard/tests/locomotion_game_design.test.mjs
-```
+Then run the target project's own UI or unit test command, if it has one. Run `node --test tests/` only inside the harness repository itself.
 
 ### Stage 5: Visual & Accessibility Matrix Gate
 Verify in headless Playwright across:

@@ -6,66 +6,103 @@
 
 ![PhysicalWorks v5 Architecture & 7-Point Rail Physics Blueprint](./assets/harness-architecture.svg)
 
----
-
-## 1. Absolute Rule: 100% Core-Freeze (기능·코어 로직 변경 절대 금지)
-
-이 하네스는 **오직 UI 디자인 시스템, 상단 Status 전용 헤더, 좌측 Hover 확장 내비게이션 레일, Lucide SVG 아이콘만 이식**하도록 설계되었습니다.
-- **절대 금지**: 기존 프로젝트의 비즈니스 로직, 백엔드/API, 상태 관리(Store), 라우터 정의, 기능 추가/삭제, DOM `id`/`data-*` 바인딩 변경을 **물리적으로 차단**합니다.
-- **4중 코어 보호 인자**:
-  1. **`PreToolUse` Exit Code `2` 하드 블로커 ([`guard_core_freeze.mjs`](.agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs))**: 백엔드/API/스토어/모델 파일 수정 시도를 툴 실행 직전에 차단합니다.
-  2. **3-Agent 권한 분리 오케스트레이션 ([`.claude/agents/`](.claude/agents/))**:
-     - `1-core-contract-mapper.md` (`tools: Read, Glob, Grep` — 읽기 전용 코어 동결 목록 & 상단→좌측 Nav 매핑)
-     - `2-v5-shell-and-rail-surgeon.md` (CSS 토큰·셸·좌측 레일·Lucide 스프라이트만 집도)
-     - `3-harness-gatekeeper.md` (`verify_v5_harness.mjs` + `git diff` 코어 무결성 감사)
-  3. **`PostToolUse` / `Stop` 디자인 불변성 검증기 ([`verify_v5_harness.mjs`](.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs))**: 상단 헤더에 내비게이션 링크가 남아있거나 좌측 레일 스프링 수식/Lucide 규격이 누락되면 즉시 실패를 반환합니다.
-  4. **모델 실행 인자 가이드 ([`META_PROMPT.md`](META_PROMPT.md))**: `temperature` 단독 제어의 한계를 보완하는 `--effort medium` + Negative Constraint 프롬프트 설계를 제공합니다.
 
 ---
 
-## 2. Repository Structure
+## 1. 원칙: 코어 불변(Core-Freeze)과 사용자 선호 반영
+
+이 하네스는 다른 프로젝트의 프레젠테이션 계층에 PhysicalWorks v5 디자인 시스템을 이식합니다. 이식 범위는 디자인 토큰, 상단 Status 전용 헤더, 좌측 Hover 확장 레일, Lucide SVG 아이콘입니다. 비즈니스 로직, 백엔드와 API, 상태 관리, 라우터, DOM `id`와 `data-*` 바인딩은 바꾸지 않습니다.
+
+보호 장치는 다섯 가지입니다.
+
+1. PreToolUse 하드 블로커 ([`guard_core_freeze.mjs`](.agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs)): 보호 경로에 쓰는 도구 호출을 exit `2`로 차단합니다. Edit, Write, MultiEdit, NotebookEdit, Bash 쓰기(`sed -i`, `>`, `rm`, `git checkout --`), Codex `apply_patch`, Gemini `write_file`/`replace`/`run_shell_command`를 확인합니다. 하네스 자신의 훅 설정과 `harness.config.json`도 보호합니다.
+2. 대상 지정 검증기 ([`verify_v5_harness.mjs`](.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs)): `harness.config.json`에 적힌 대상 프로젝트의 셸 파일을 검사합니다. 레일 계약값(330ms, 230ms, 100ms, 55ms, 12px, 3px, 64px), 토큰, 접근성 규칙, 사용자 결정 반영 여부를 확인합니다. CSS 공백을 정규화하므로 압축하지 않은 CSS도 검사합니다. 훅에서는 실패 시 exit `2`를 반환해 에이전트가 결과를 받습니다.
+3. 3-Agent 권한 분리 ([`.claude/agents/`](.claude/agents/)): `core-contract-mapper`(읽기 전용) → `v5-shell-and-rail-surgeon`(UI와 CSS만 수정) → `harness-gatekeeper`(검증).
+4. 더블 다이아몬드 선호 루프 ([`design-double-diamond`](.agents/skills/design-double-diamond/SKILL.md)): 라운드마다 AskUserQuestion으로 사용자의 선호를 묻고, 선택지를 HTML 시안으로 보여 줍니다. 승인된 결정은 `design-decisions.json`에 CSS 단언으로 남고, verify가 반영 여부를 확인합니다.
+5. 모델 실행 인자 가이드 ([`META_PROMPT.md`](META_PROMPT.md)).
+
+---
+
+## 2. 설치
+
+### Claude Code 플러그인 (권장)
 
 ```text
-physicalworks-design-harness/
-├── DESIGN.md                                      # 규범적 디자인 시스템 명세서 (Geist × PhysicalWorks v5 + Left Hover Rail)
-├── META_PROMPT.md                                 # "딸깍" 원클릭 구축 & 코어 무결성 이식 메타프롬프트
-├── QA_PROMPT.md                                   # Opus 5.5 전용 하네스 구성도 & 디자인 완성도 100점 루브릭 QA 프롬프트
-├── CLAUDE.md                                      # Claude Code (Opus 5.5) 엔트리포인트 지침서
-├── AGENTS.md                                      # Codex / Antigravity / Cursor 멀티 에이전트 지침서
-├── assets/
-│   ├── physicalworks-v5-harness-hero.jpg          # UI & 3-Stage Opus 5.5 Core-Freeze Harness 쇼케이스 이미지
-│   └── harness-architecture.svg                   # 7-Point Rail Physics & Bento 토큰 아키텍처 다이어그램
-├── .claude/
-│   ├── settings.json                              # PreToolUse(guard_core_freeze) + PostToolUse/Stop(verify_v5_harness)
-│   └── agents/                                    # Opus 5.5 3-Agent Orchestration 서브에이전트 정의
-│       ├── 1-core-contract-mapper.md              # Phase 1: Read-Only 코어 동결 & 상단->좌측 Nav 매퍼
-│       ├── 2-v5-shell-and-rail-surgeon.md         # Phase 2: UI/CSS & 좌측 64<->240px 스프링 집도의
-│       └── 3-harness-gatekeeper.md                # Phase 3: 코어 diff 0건 & 디자인 불변성 감사관
-├── .codex/hooks.json                              # Codex 자동 검증 훅
-├── .gemini/settings.json                          # Gemini / Antigravity 자동 검증 훅
-├── .impeccable/config.json                        # Impeccable Anti-Slop 설정
-├── .agents/skills/
-│   ├── x2-v5-console-harness/                     # 핵심 파이프라인 스킬 + verify_v5_harness.mjs + guard_core_freeze.mjs
-│   ├── impeccable-anti-slop/                      # Anti-Slop & WCAG 2.2 AA 검증 스킬
-│   ├── apple-design-system/                       # 44px 터치 타깃, 포커스 트랩, 4pt 그리드 스킬
-│   └── ui-ux-component-architecture/              # 2D/3D 캔버스, 노드 플로우, 고주파 폴링 안정성 스킬
-└── reference/                                     # 순수 디자인 레퍼런스 (CSS / HTML Shell / Left Rail JS)
-    ├── physicalworks_v5.css                       # --v5-* 토큰, 1px Bento, 64px<->240px 감쇠 스프링 원문
-    ├── console.css                                # 기본 레이아웃 골격
-    ├── console.html                               # 3-Tier Shell + 인라인 Lucide SVG 스프라이트 레퍼런스
-    └── nav-hover-contract.js                      # Escape 즉시 닫기(data-hover-dismissed), 포커스 트랩, 200% 줌 동기화
+/plugin marketplace add dosigner/physicalworks-design-harness
+/plugin install physicalworks-design-harness@physicalworks-design-harness
 ```
 
----
+플러그인은 스킬, 서브에이전트 3개, 훅을 제공합니다. 플러그인 훅은 모든 프로젝트에서 실행되므로, 프로젝트 루트에 `harness.config.json`이 있을 때만 동작합니다. 프로젝트 파일은 복사하지 않습니다.
 
-## 3. 원클릭("딸깍") 이식 & QA 사용법
-
-- **타 플랫폼 원클릭 구축 및 UI 이식**: **[`META_PROMPT.md`](META_PROMPT.md)** 프롬프트 복사 → Opus 5.5에 붙여넣기
-- **하네스 아키텍처 & 디자인 완성도 100점 만점 QA 감사**: **[`QA_PROMPT.md`](QA_PROMPT.md)** 프롬프트 복사 → Opus 5.5에 붙여넣기
+### 파일 복사 설치 (Codex, Gemini, Antigravity, 또는 저장소에 하네스를 커밋할 때)
 
 ```bash
 git clone --depth 1 https://github.com/dosigner/physicalworks-design-harness.git /tmp/pw-v5-harness && \
-cp /tmp/pw-v5-harness/DESIGN.md /tmp/pw-v5-harness/META_PROMPT.md /tmp/pw-v5-harness/QA_PROMPT.md /tmp/pw-v5-harness/CLAUDE.md /tmp/pw-v5-harness/AGENTS.md ./ && \
-cp -R /tmp/pw-v5-harness/.agents /tmp/pw-v5-harness/.claude /tmp/pw-v5-harness/.codex /tmp/pw-v5-harness/.gemini /tmp/pw-v5-harness/.impeccable ./ && \
+node /tmp/pw-v5-harness/install.mjs . --html src/index.html --css src/styles/physicalworks_v5.css --js src/nav.js && \
 rm -rf /tmp/pw-v5-harness
+```
+
+[`install.mjs`](install.mjs)는 기존 파일을 덮어쓰지 않습니다. 동작은 다음과 같습니다.
+
+1. 스킬을 `.agents/skills/`(Codex, Gemini)와 `.claude/skills/`(Claude Code)에 복사합니다. 이미 있는 파일은 건너뜁니다.
+2. `CLAUDE.md`와 `AGENTS.md`가 있으면 표시 블록을 한 번만 덧붙입니다.
+3. `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json`의 다른 키와 훅을 유지하고 하네스 훅만 병합합니다.
+4. 대상 프로젝트에 `DESIGN.md`가 있으면 그대로 두고, 하네스 명세는 스킬 폴더에 설치합니다.
+5. `harness.config.json`을 한 번 만듭니다. 이후에는 사람만 수정합니다.
+
+`--dry-run`으로 변경 내용을 먼저 확인할 수 있습니다. 두 방식을 함께 쓰면 훅이 두 번 실행되므로 하나만 선택하세요.
+
+### `harness.config.json`
+
+```json
+{
+  "design": "DESIGN.md",
+  "html": ["src/index.html"],
+  "css": ["src/styles/physicalworks_v5.css"],
+  "js": ["src/nav.js"],
+  "header": { "requiredIds": ["themeToggle"] },
+  "icons": { "mode": "sprite", "prefix": "x2-lucide-" },
+  "decisions": "design-decisions.json",
+  "protectedPatterns": ["^src/hooks/"],
+  "allowPatterns": []
+}
+```
+
+`html`에는 `.html`, `.jsx`, `.tsx` 셸 파일을 쓸 수 있습니다. `lucide-react` 같은 패키지를 쓰면 `icons.mode`를 `"package"`로 바꾸세요. `css`의 첫 항목은 다른 스타일시트보다 뒤에 로드되어야 합니다. 번들 `reference/`를 대상 프로젝트의 검사 대상으로 쓰지 마세요.
+
+---
+
+## 3. 사용법
+
+1. 이식: [`META_PROMPT.md`](META_PROMPT.md)의 프롬프트를 대상 프로젝트의 에이전트에 붙여 넣으세요.
+2. 선호 반영 루프: Claude Code에서 `design-double-diamond` 스킬을 실행하세요. 라운드마다 질문과 HTML 시안이 나옵니다.
+3. QA 채점: [`QA_PROMPT.md`](QA_PROMPT.md)의 프롬프트를 붙여 넣으세요.
+4. 하네스 자체 테스트: 이 저장소에서 `node --test tests/`를 실행하세요.
+
+---
+
+## 4. Repository Structure
+
+```text
+physicalworks-design-harness/
+├── .claude-plugin/plugin.json, marketplace.json   # Claude Code 플러그인과 마켓플레이스 매니페스트
+├── hooks/hooks.json                               # 플러그인 훅 (--plugin: harness.config.json이 없으면 비활성)
+├── install.mjs                                    # 비파괴 파일 복사 설치 스크립트
+├── harness.config.json                            # 이 저장소의 자체 검사 설정 (reference/ 대상)
+├── tests/harness.test.mjs                         # guard, verify, install, 더블 다이아몬드 회귀 테스트
+├── DESIGN.md, META_PROMPT.md, QA_PROMPT.md, CLAUDE.md, AGENTS.md
+├── .claude/settings.json                          # 복사 설치용 Claude Code 훅 ($CLAUDE_PROJECT_DIR 절대 경로)
+├── .claude/agents/                                # 3-Agent 정의
+├── .codex/hooks.json                              # Codex PreToolUse, PostToolUse, Stop 훅
+├── .gemini/settings.json                          # Gemini BeforeTool, AfterAgent 훅
+├── .agents/skills/
+│   ├── x2-v5-console-harness/                     # 이식 파이프라인, guard, verify, 공통 설정 로더
+│   ├── design-double-diamond/                     # 라운드별 선호 질문, HTML 시안 생성, 결정 기록
+│   ├── impeccable-anti-slop/, apple-design-system/, ui-ux-component-architecture/
+└── reference/
+    ├── physicalworks_v5.css                       # 이식 가능한 v5 토큰, 레일 물리, Hairline Bento
+    ├── x2-app-overrides.css                       # X2 콘솔 전용 규칙 (이식 대상 아님)
+    ├── console.css                                # 기본 레이아웃 골격
+    ├── console.html                               # 단독 실행 레퍼런스 셸 (nav 예시, .segmented 예시)
+    └── nav-hover-contract.js                      # Escape 해제, 모바일 포커스 트랩, 테마, 200% 확대 동기화
 ```
