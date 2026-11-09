@@ -91,3 +91,26 @@ export function syncStickyOffsets() {
     root.style.scrollPaddingTop = `${Math.ceil(covered) + 8}px`;
   }
 }
+
+// Wiring for the standalone reference shell (reference/console.html).
+navToggle?.addEventListener('click', () => setMenu(navSidebar?.dataset.open !== 'true'));
+mobileNavigation.addEventListener('change', () => setMenu(false));
+
+let savedTheme = null;
+try { savedTheme = localStorage.getItem('x2_console_theme'); } catch {}
+applyTheme(savedTheme || (darkScheme?.matches ? 'dark' : 'light'));
+
+// Re-measure sticky bars on resize and text zoom; rAF avoids the ResizeObserver loop warning.
+const stickyObserver = new ResizeObserver(() => requestAnimationFrame(syncStickyOffsets));
+for (const el of [document.documentElement, document.querySelector('.app-header'), document.querySelector('.context-bar')]) {
+  if (el) stickyObserver.observe(el);
+}
+
+// Local .segmented view switchers: exactly one pressed button per group.
+for (const group of document.querySelectorAll('.segmented')) {
+  group.addEventListener('click', (event) => {
+    const button = event.target.closest('button');
+    if (!button) return;
+    for (const item of group.querySelectorAll('button')) item.setAttribute('aria-pressed', String(item === button));
+  });
+}

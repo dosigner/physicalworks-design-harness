@@ -18,4 +18,8 @@ Your sole responsibility is to inspect the target project and produce a strict *
      - **KEEP IN `.app-header` / `.context-bar`**: Brand identity (`.brand`), live connection/telemetry status indicators (`#connectButton`, `.status-summary`), and theme toggle (`#themeToggle`).
      - **MIGRATE TO `aside#navigation` (`#navItems`)**: All page/route links, GNB menus, and module switchers, assigning each an exact official **Lucide Icon** slug from `https://lucide.dev/icons/`.
      - **DEMOTE TO `.panel-head .segmented`**: Local view toggles (`2D`/`3D`, `List`/`Grid`, `Editor`/`Executions`).
-3. **Never propose adding new features, deleting existing features, or refactoring business logic.**
+3. **`harness.config.json` Proposal** (only when the file does not exist yet):
+   - `html`: the shell files that hold `.app-header` and `aside#navigation` (`.html`, `.jsx` or `.tsx`). `css`: the v5 stylesheet first, then any file allowed to load after it. `js`: the file with the rail Escape contract.
+   - `header.requiredIds`: the status controls that must stay in the top header. `protectedPatterns`: logic paths the default guard patterns miss (for example `^src/hooks/`).
+   - Never list the bundled `reference/` files for a target project. A human saves this file; the guard blocks agent edits after creation.
+4. **Never propose adding new features, deleting existing features, or refactoring business logic.**

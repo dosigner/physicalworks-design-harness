@@ -1,0 +1,17 @@
+{
+  "name": "physicalworks-design-harness",
+  "version": "0.2.0",
+  "description": "PhysicalWorks v5 design system harness: Core-Freeze guard, design invariant verifier, 3-agent pipeline and design skills. Inert until a project adds harness.config.json.",
+  "author": {
+    "name": "dosigner"
+  },
+  "repository": "https://github.com/dosigner/physicalworks-design-harness",
+  "skills": [
+    "./.agents/skills/"
+  ],
+  "agents": [
+    "./.claude/agents/1-core-contract-mapper.md",
+    "./.claude/agents/2-v5-shell-and-rail-surgeon.md",
+    "./.claude/agents/3-harness-gatekeeper.md"
+  ]
+}

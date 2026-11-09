@@ -1,0 +1,28 @@
+{
+  "$comment": "Self-check for this repository: the gates verify the reference shell. A target project lists its own shell files here instead.",
+  "design": "DESIGN.md",
+  "html": [
+    "reference/console.html"
+  ],
+  "css": [
+    "reference/physicalworks_v5.css"
+  ],
+  "js": [
+    "reference/nav-hover-contract.js"
+  ],
+  "header": {
+    "requiredIds": [
+      "connectButton",
+      "themeToggle"
+    ]
+  },
+  "icons": {
+    "mode": "sprite",
+    "prefix": "x2-lucide-"
+  },
+  "decisions": "design-decisions.json",
+  "requireApprovedDesign": false,
+  "waive": [],
+  "protectedPatterns": [],
+  "allowPatterns": []
+}

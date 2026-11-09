@@ -1,0 +1,355 @@
+/* X2 console app-specific overrides (routes, presets, touch TTS). Load after physicalworks_v5.css. Not part of the portable design system. */
+@media all{
+body:has(#navItems [data-route="flow"][aria-current="page"]) .flow-root .flow-editor-message{background:var(--surface);color:var(--secondary)}}
+@media(min-width:700px) and (hover:hover) and (pointer:fine){
+  .navigation .nav-link[data-route=flow][data-active=true]::after{position:absolute;left:32px;top:8px;margin:0}}
+
+/* Astryx-inspired controls for the saved motion catalog. */
+body[data-route=presets] .preset-workspace {
+  --catalog-line:#d7d9df;
+  --catalog-fill:#f4f5f7;
+  --catalog-hover:#f7f8fa;
+  --catalog-text:#1c1e24;
+  --catalog-muted:#565b66;
+}
+html[data-theme=dark] body[data-route=presets] .preset-workspace {
+  --catalog-line:#454750;
+  --catalog-fill:#292b31;
+  --catalog-hover:#25272d;
+  --catalog-text:#f1f2f5;
+  --catalog-muted:#b6bac5;
+}
+html body[data-route=presets] .preset-search {align-items:center;gap:8px;margin:4px 0 12px}
+html[data-theme=dark] body[data-route=presets] .preset-search {align-items:end}
+html[data-theme=dark] body[data-route=presets] .preset-search-count {margin:0 0 12px 8px}
+html body[data-route=presets] .preset-search>label {min-width:0}
+html body[data-route=presets] .preset-search :is(input,select),
+html body[data-route=presets] .preset-emoji-cell select {
+  min-height:44px;border:1px solid var(--catalog-line);border-radius:8px;
+  background:var(--surface);color:var(--catalog-text);font-size:.8125rem;outline:none;
+}
+html body[data-route=presets] .preset-search input {padding-inline:14px}
+html:not([data-theme=dark]) body[data-route=presets] .preset-search input:not(:focus-visible) {outline:none}
+html body[data-route=presets] .preset-search :is(input,select):hover,
+html body[data-route=presets] .preset-emoji-cell select:hover {border-color:var(--catalog-muted)}
+html body[data-route=presets] .preset-search :is(input,select):focus-visible,
+html body[data-route=presets] .preset-emoji-cell select:focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+html body[data-route=presets] .preset-search>.button {min-height:44px;border-radius:8px}
+html body[data-route=presets] .preset-search-count {margin:0 0 0 8px;color:var(--catalog-muted);font-size:.8125rem}
+html body[data-route=presets] .preset-table {margin-top:12px;border:1px solid var(--catalog-line);border-radius:10px;overflow:hidden;color:var(--catalog-text);font-size:.8125rem}
+html body[data-route=presets] .preset-grid {padding:0;margin:0}
+html body[data-route=presets] .preset-columns {padding:12px 14px;background:var(--catalog-fill);border-radius:0;border-bottom:1px solid var(--catalog-line);color:var(--catalog-muted);font-weight:600}
+html body[data-route=presets] .preset-card {padding:12px 14px;border:0;border-bottom:1px solid var(--catalog-line);border-radius:0;background:var(--surface);box-shadow:none}
+html body[data-route=presets] .preset-card:last-child {border-bottom:0}
+html body[data-route=presets] .preset-card:hover {background:var(--catalog-hover);border-color:var(--catalog-line)}
+html body[data-route=presets] .preset-card[data-active=true] {background:var(--blue-light)}
+html body[data-route=presets] .preset-card[hidden] {display:none}
+html body[data-route=presets] .preset-card-heading {gap:12px}
+html body[data-route=presets] .preset-card-heading h3 {font-size:.875rem;font-weight:600;line-height:1.35}
+html body[data-route=presets] .preset-card-heading small {color:var(--catalog-muted);font-size:.75rem}
+html body[data-route=presets] .preset-row-actions .button {min-height:44px;border-radius:8px}
+@media(max-width:1050px){
+  html body[data-route=presets] .preset-card {padding:16px;gap:12px 16px}
+  html[data-theme=dark] body[data-route=presets] .preset-row-actions::before {content:attr(data-label);flex-basis:100%;color:var(--catalog-muted);font-size:.75rem}}
+@media(max-width:600px){
+  html:not([data-theme=dark]) body[data-route=presets] .preset-search,
+  html[data-theme=dark] body[data-route=presets] .preset-search {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px 8px;margin-inline:3px}
+  html body[data-route=presets] .preset-search>label:first-child {grid-column:1/-1}
+  html body[data-route=presets] .preset-search>label {display:grid;gap:4px}
+  html:not([data-theme=dark]) body[data-route=presets] .preset-search label>.field-label {
+    position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:normal
+  }
+  html body[data-route=presets] .preset-search label>.field-label {color:var(--catalog-muted);font-size:.75rem}
+  html body[data-route=presets] .preset-search-count,
+  html body[data-route=presets] .preset-search-empty {grid-column:1/-1;margin:0}
+  html:not([data-theme=dark]) body[data-route=presets] .preset-search-count {margin:0}
+  html[data-theme=dark] body[data-route=presets] .preset-search-count {margin:0}
+  html[data-theme=dark] body[data-route=presets] .preset-emoji-cell {grid-column:1/-1}}
+
+/* Astryx-inspired tabs and controls retain the native interaction model. */
+html:root body[data-route=presets] .preset-workspace .preset-tabs {
+  display:flex;gap:4px;padding:0;border-bottom:1px solid var(--catalog-line);
+  overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin
+}
+html:root body[data-route=presets] .preset-workspace .preset-tabs > [role=tab] {
+  flex:0 0 auto;min-height:44px;padding:10px 16px;border:0;border-bottom:2px solid transparent;
+  border-radius:8px 8px 0 0;background:transparent;color:var(--catalog-muted);font-size:.875rem;font-weight:500
+}
+html:root body[data-route=presets] .preset-workspace .preset-tabs > [role=tab]:hover {background:var(--catalog-hover);color:var(--catalog-text)}
+html:root body[data-route=presets] .preset-workspace .preset-tabs > [role=tab][aria-selected=true] {
+  border-bottom-color:var(--catalog-text);background:transparent;color:var(--catalog-text);font-weight:600
+}
+html:root body[data-route=presets] .preset-workspace .preset-tabs > [role=tab]:focus-visible {outline:2px solid var(--focus);outline-offset:-3px}
+html body[data-route=presets] :is(.preset-search>.button,.preset-row-actions .button) {
+  border-radius:8px;font-weight:600;line-height:1.25
+}
+html body[data-route=presets] :is(.preset-search>.button,.preset-row-actions .button):focus-visible {
+  outline:2px solid var(--focus);outline-offset:2px
+}
+html body[data-route=presets] .preset-emoji-cell select {padding-left:12px;padding-right:36px}
+html body[data-route=presets] .preset-search select {padding-inline:12px 28px}
+
+/* Movement status uses the same surface and control rhythm as the catalog. */
+body[data-route=locomotion] .locomotion-operation {padding:16px 24px}
+body[data-route=locomotion] .locomotion-operation h2 {font-size:1rem;font-weight:600;line-height:1.4}
+body[data-route=locomotion] .locomotion-operation p {margin-top:5px;line-height:1.5}
+body[data-route=locomotion] .locomotion-mode-verdict {font-size:.8125rem;font-weight:600}
+body[data-route=locomotion] .locomotion-mode-detail,
+body[data-route=locomotion] .locomotion-observation {font-size:.75rem;line-height:1.5}
+body[data-route=locomotion] .locomotion-manual-label {display:grid;gap:2px}
+body[data-route=locomotion] .locomotion-manual-label strong {font-size:.875rem}
+body[data-route=locomotion] .locomotion-manual-label small {color:var(--secondary);font-size:.75rem;line-height:1.4}
+body[data-route=locomotion] .locomotion-action-buttons>.button {min-height:44px;border-radius:8px;font-size:.8125rem}
+body[data-route=locomotion] .locomotion-status {font-size:.8125rem;line-height:1.4}
+body[data-route=locomotion] .locomotion-block-reason {line-height:1.5}
+body[data-route=locomotion] .locomotion-root :is(button,input,select):focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:599px){
+  body[data-route=locomotion] .locomotion-operation {padding:14px 16px}}
+
+/* Group the existing movement number input and its two step buttons. */
+body[data-route=locomotion] .locomotion-stepper {
+  --stepper-line:#d7d9df;
+  --stepper-fill:#f4f5f7;
+  --stepper-ink:#1c1e24;
+  gap:0;
+  border:1px solid var(--stepper-line);
+  border-radius:8px;
+  background:var(--stepper-fill);
+}
+html[data-theme=dark] body[data-route=locomotion] .locomotion-stepper {
+  --stepper-line:#454750;
+  --stepper-fill:#292b31;
+  --stepper-ink:#f1f2f5;
+}
+body[data-route=locomotion] .locomotion-stepper > :is(input,.button) {
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--stepper-ink);
+}
+body[data-route=locomotion] .locomotion-stepper > .button:first-child {
+  border-inline-end:1px solid var(--stepper-line);
+  border-start-start-radius:7px;
+  border-end-start-radius:7px;
+}
+body[data-route=locomotion] .locomotion-stepper > .button:last-child {
+  border-inline-start:1px solid var(--stepper-line);
+  border-start-end-radius:7px;
+  border-end-end-radius:7px;
+}
+body[data-route=locomotion] .locomotion-stepper > .button:disabled {
+  background:transparent;
+  color:var(--secondary);
+  opacity:.65;
+}
+body[data-route=locomotion] .locomotion-stepper > .button:hover:not(:disabled) {
+  background:var(--background);
+}
+body[data-route=locomotion] .locomotion-stepper > input:focus {
+  background:var(--surface);
+}
+body[data-route=locomotion] .locomotion-root .locomotion-stepper > :is(input,.button):focus-visible {
+  outline-offset:-3px;
+}
+
+/* Astryx-inspired joint observation controls. */
+body[data-route=robot] .touch-tts {max-width:720px}
+body[data-route=robot] .touch-tts-group {display:grid;gap:8px;min-width:0;margin-top:20px}
+body[data-route=robot] .touch-tts-label {font-size:.8125rem;font-weight:600}
+body[data-route=robot] .touch-tts-key-header {display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+body[data-route=robot] .touch-tts-key-state {color:var(--secondary);font-size:.75rem;font-weight:600}
+body[data-route=robot] .touch-tts-key-row {display:flex;gap:8px;align-items:center;justify-content:space-between;min-width:0}
+body[data-route=robot] .touch-tts-key-hint {font-family:var(--font-mono);font-size:.875rem;overflow-wrap:anywhere}
+body[data-route=robot] .touch-tts-key-form {display:grid;gap:8px;min-width:0}
+body[data-route=robot] .touch-tts :is(input[type=password],textarea) {
+  box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:10px 12px;
+  border:1px solid var(--border);border-radius:8px;background:var(--surface-subtle);color:var(--text);font-size:.875rem;line-height:1.5
+}
+body[data-route=robot] .touch-tts textarea {resize:vertical}
+body[data-route=robot] .touch-tts :is(input[type=password],textarea)::placeholder {color:var(--secondary);opacity:1}
+body[data-route=robot] .touch-tts :is(input,textarea,button,summary):focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+body[data-route=robot] .touch-tts :is(input[type=password],textarea):hover:not(:disabled) {border-color:var(--border-strong)}
+body[data-route=robot] .touch-tts :is(input[type=password],textarea):focus-visible {background:var(--surface)}
+body[data-route=robot] .touch-tts .button {min-height:44px;padding:10px 16px;border-radius:8px;font-weight:600;justify-content:center}
+body[data-route=robot] .touch-tts .button.secondary:not(:disabled) {background:var(--surface-subtle);border-color:transparent}
+body[data-route=robot] .touch-tts .button.secondary:not(:disabled):hover {background:var(--layer-hover)}
+body[data-route=robot] .touch-tts-key-row .button {flex:none}
+body[data-route=robot] .touch-tts-actions {display:flex;flex-wrap:wrap;gap:8px}
+body[data-route=robot] .touch-tts-feedback {display:flex;align-items:center;gap:8px;min-width:0}
+body[data-route=robot] .touch-tts-feedback[data-transfer-error=true] {align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface-subtle)}
+body[data-route=robot] .touch-tts-feedback[data-transfer-error=true] .touch-tts-feedback-copy>p {color:var(--text);font-weight:600}
+body[data-route=robot] .touch-tts-warning-icon {display:none;flex:none;width:18px;height:18px;color:var(--warning)}
+body[data-route=robot] .touch-tts-feedback[data-transfer-error=true] .touch-tts-warning-icon {display:block}
+body[data-route=robot] .touch-tts-transfer-help {display:grid;gap:4px;margin-top:6px;color:var(--secondary)}
+body[data-route=robot] .touch-tts-generating {
+  flex:none;width:24px;height:5px;border-radius:999px;
+  background:linear-gradient(90deg,#27b9e9,#7854ff,#db69f1,#27b9e9);background-size:200% 100%;
+  animation:touch-tts-shift 1.4s linear infinite
+}
+@keyframes touch-tts-shift {to {background-position:-200% 0}}
+body[data-route=robot] .touch-tts-group p {margin:0;font-size:.75rem;line-height:1.5}
+body[data-route=robot] .touch-tts-group p:empty {display:none}
+body[data-route=robot] .touch-tts-details {font-size:.75rem;color:var(--secondary)}
+body[data-route=robot] .touch-tts-details summary {cursor:pointer;width:fit-content}
+body[data-route=robot] .touch-tts-details p {margin-top:6px}
+body[data-route=robot] .touch-tts audio {max-width:100%}
+body[data-route=robot] .robot-observation-layout {gap:24px;min-width:0}
+body[data-route=robot] .robot-observation-layout>div {min-width:0}
+body[data-route=robot] .robot-observation-layout .toolbar {
+  padding:0 0 12px;gap:12px;border:0;align-items:center
+}
+body[data-route=robot] .robot-observation-layout .toolbar .button {
+  min-height:44px;padding:8px 14px;border-radius:8px;font-weight:600
+}
+body[data-route=robot] .robot-observation-layout .toolbar .muted {font-size:.75rem;line-height:1.5}
+body[data-route=robot] .robot-viewport {border-radius:10px}
+body[data-route=robot] .robot-trail-legend {gap:8px 16px;line-height:1.5}
+body[data-route=robot] .robot-trail-status {line-height:1.5}
+body[data-route=robot] .robot-group-status {gap:8px;margin-bottom:16px}
+body[data-route=robot] .robot-group-status>div {
+  min-width:0;min-height:44px;padding:10px 12px;border:1px solid var(--border);
+  border-radius:8px;background:var(--surface-subtle);font-size:.8125rem
+}
+body[data-route=robot] .robot-group-status strong {font-weight:600}
+body[data-route=robot] .robot-selected {
+  min-height:0;padding:12px 14px;border:1px solid var(--border-strong);
+  border-radius:8px;background:var(--surface-subtle);color:var(--text);line-height:1.5
+}
+body[data-route=robot] .robot-joint-table {border:1px solid var(--border);border-radius:10px;scrollbar-width:thin}
+body[data-route=robot] .robot-joint-table table {width:100%;border-collapse:collapse;font-size:.8125rem}
+body[data-route=robot] .robot-joint-table th {background:var(--surface-subtle);font-weight:600;color:var(--secondary)}
+body[data-route=robot] .robot-joint-table :is(th,td) {padding:8px 12px;border-bottom:1px solid var(--border)}
+body[data-route=robot] .robot-joint-table td:nth-child(2) {font-variant-numeric:tabular-nums;white-space:nowrap}
+body[data-route=robot] .robot-joint-table tr:last-child td {border-bottom:0}
+body[data-route=robot] .robot-joint-table .button {
+  min-height:40px;padding:8px 10px;border:1px solid transparent;border-radius:7px;
+  background:transparent;color:var(--text);font-weight:500;line-height:1.35
+}
+body[data-route=robot] .robot-joint-table .button:hover {background:var(--surface-subtle)}
+body[data-route=robot] .robot-joint-table .button[aria-pressed=true] {
+  border-color:var(--border-strong);background:var(--surface-subtle);font-weight:600
+}
+body[data-route=robot] .robot-observation-layout :is(button,canvas):focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+@media(max-width:599px){
+  body[data-route=robot] .robot-group-status {grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-route=robot] .robot-joint-table :is(th,td) {padding:8px}}
+
+/* Pose controls keep the model limits and hardware status visible. */
+body[data-route=upper-body] .pose-editor .panel-body {padding:20px 24px}
+body[data-route=upper-body] .pose-editor-head h2 {font-size:1rem;font-weight:600}
+body[data-route=upper-body] .pose-editor-head .tag {padding:5px 10px;font-weight:600}
+body[data-route=upper-body] .pose-editor .upper-body-note {line-height:1.6}
+body[data-route=upper-body] .pose-editor-grid {gap:24px;margin-top:20px}
+body[data-route=upper-body] .pose-editor-grid>div {min-width:0}
+body[data-route=upper-body] .pose-editor-stage {border-radius:10px}
+body[data-route=upper-body] .pose-mirror-controls {gap:10px 16px;margin-bottom:16px}
+body[data-route=upper-body] .pose-mirror-controls label {
+  min-height:40px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;
+  background:var(--surface);font-size:.8125rem;font-weight:500
+}
+body[data-route=upper-body] .pose-mirror-controls label:has(input:checked) {border-color:var(--border-strong);background:var(--surface-subtle)}
+body[data-route=upper-body] .pose-editor-joints {padding:2px;scrollbar-width:thin}
+body[data-route=upper-body] .pose-editor fieldset {padding:12px 14px;margin-bottom:12px;border-radius:10px}
+body[data-route=upper-body] .pose-editor legend {padding:0 6px;font-size:.8125rem;font-weight:600}
+body[data-route=upper-body] .pose-editor-row {min-width:0;gap:8px;padding:7px 0;line-height:1.4}
+body[data-route=upper-body] .pose-editor-row+ .pose-editor-row {border-top:1px solid var(--border)}
+body[data-route=upper-body] .pose-editor-row label {font-size:.8125rem;font-weight:500}
+body[data-route=upper-body] .pose-editor-row input[type=range] {min-width:0;accent-color:var(--text)}
+body[data-route=upper-body] .pose-editor-row input[type=number] {
+  min-height:44px;padding:8px;border:1px solid var(--border-strong);border-radius:8px;
+  background:var(--surface);color:var(--text);font-variant-numeric:tabular-nums
+}
+body[data-route=upper-body] .pose-editor-value {white-space:nowrap}
+body[data-route=upper-body] .pose-editor-rad {font-size:.75rem;white-space:nowrap}
+body[data-route=upper-body] .pose-editor-save {gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+body[data-route=upper-body] .pose-editor-save label {gap:6px;color:var(--secondary);font-weight:500}
+body[data-route=upper-body] .pose-editor-save :is(input,select,.button),
+body[data-route=upper-body] .pose-mode-actions .button {min-height:44px;border-radius:8px}
+body[data-route=upper-body] .pose-editor-save input[type=file] {max-width:100%;padding:8px;font-size:.75rem}
+body[data-route=upper-body] .pose-mode-status {gap:8px 12px;line-height:1.5}
+body[data-route=upper-body] .pose-mode-checks {gap:10px;margin:14px 0}
+body[data-route=upper-body] .pose-mode-checks label {line-height:1.5}
+body[data-route=upper-body] .pose-workspace :is(button,input,select,canvas):focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+@container (max-width:430px){
+  body[data-route=upper-body] .pose-editor-row {grid-template-columns:minmax(0,1fr) minmax(0,1fr) 82px}
+  body[data-route=upper-body] .pose-editor-rad {grid-column:2/-1}}
+@media(max-width:599px){
+  body[data-route=upper-body] .pose-editor .panel-body {padding:16px}
+  body[data-route=upper-body] .pose-editor-save label {flex:1 1 100%}
+  body[data-route=upper-body] .pose-editor-save :is(input,select) {max-width:100%}}
+
+/* Preset voice summary and compact current-request state. */
+html:root body[data-route=presets] .preset-current:not([hidden]){margin-top:12px;padding:12px 16px;background:var(--surface-subtle);border:1px solid var(--border);border-radius:6px}
+html:root body[data-route=presets] .preset-current>strong{font-size:.875rem}
+html:root body[data-route=presets] .preset-current p{max-width:78ch}
+html:root body[data-route=presets] .preset-speech-summary{margin:0;color:var(--secondary);font-size:.8125rem;overflow-wrap:anywhere}
+html:root body[data-route=presets] .preset-speech{max-width:none;margin:0;color:var(--text)}
+html:root body[data-route=presets] .preset-speech>summary{display:inline-block;padding:8px 0;color:var(--blue);cursor:pointer;font-size:.8125rem;font-weight:600}
+html:root body[data-route=presets] .preset-speech[open]{padding:16px 20px;background:var(--surface-subtle);border-radius:8px}
+html:root body[data-route=presets] .preset-speech[open]>summary{padding:0;color:var(--text);font-size:1rem}
+html:root body[data-route=presets] .preset-speech label{max-width:560px;gap:8px;margin-top:16px}
+html:root body[data-route=presets] .preset-speech-actions{gap:8px;margin-top:12px}
+html:root body[data-route=presets] .preset-speech p{margin:8px 0;line-height:1.55}
+html:root body[data-route=presets] .preset-preplay{margin:0;padding:8px 0;border:0}
+@media(max-width:699px){html:root body[data-route=presets] .preset-speech[open]{padding:16px}}
+
+/* Astryx-inspired disclosure controls for preset speech settings. */
+html:root body[data-route=presets] .preset-card-heading h3 {display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+html:root body[data-route=presets] .preset-csv-label {font-size:.75rem;font-weight:500;color:var(--secondary);min-width:0;max-width:100%;overflow-wrap:normal;word-break:normal;overflow-x:auto;scrollbar-width:thin}
+html:root body[data-route=presets] .preset-speech>summary,
+html:root body[data-route=presets] .preset-speech[open]>summary {display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);color:var(--text);font-size:.8125rem;font-weight:600;list-style:none}
+html:root body[data-route=presets] .preset-speech>summary::-webkit-details-marker {display:none}
+html:root body[data-route=presets] .preset-speech>summary::before {content:'+';font-size:1rem;line-height:1}
+html:root body[data-route=presets] .preset-speech[open]>summary::before {content:'−'}
+html:root body[data-route=presets] .preset-speech>summary:hover {background:var(--catalog-hover);border-color:var(--catalog-muted)}
+html:root body[data-route=presets] .preset-speech>summary:focus-visible {outline:2px solid var(--focus);outline-offset:2px}
+
+html:root body[data-route=presets] .preset-speech-actions .button {min-height:40px;padding:8px 16px;border-radius:8px;font-size:.8125rem;font-weight:600}
+html:root body[data-route=presets] .preset-voice-bar{display:flex;flex-wrap:wrap;align-items:end;gap:12px 24px;padding:0 0 16px;margin:0 0 16px;border-bottom:1px solid var(--border)}
+html:root body[data-route=presets] .preset-voice-bar[hidden]{display:none}
+html:root body[data-route=presets] .preset-voice-bar label{display:grid;gap:6px;min-width:200px}
+html:root body[data-route=presets] .preset-voice-bar select{min-height:40px}
+html:root body[data-route=presets] .preset-voice-bar strong{font-size:.875rem;font-variant-numeric:tabular-nums}
+html:root body[data-route=presets] .preset-voice-status,html:root body[data-route=presets] .preset-timing-state{margin:2px 0 0;color:var(--secondary);font-size:.75rem}
+html:root body[data-route=presets] .preset-voice-timing{margin:0;padding:8px 0;color:var(--text)}
+html:root body[data-route=presets] .preset-voice-timing>summary{display:inline-flex;align-items:center;min-height:36px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);font-size:.8125rem;font-weight:600;cursor:pointer;list-style:none}
+html:root body[data-route=presets] .preset-voice-timing>summary::-webkit-details-marker{display:none}
+html:root body[data-route=presets] .preset-voice-timing>summary::before{content:'+';font-size:1rem;margin-right:8px}
+html:root body[data-route=presets] .preset-voice-timing[open]>summary::before{content:'−'}
+html:root body[data-route=presets] .preset-voice-timing>summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+html:root body[data-route=presets] .preset-timing-note{font-size:.8125rem;font-weight:600;margin:12px 0 4px;font-variant-numeric:tabular-nums}
+html:root body[data-route=presets] .preset-voice-text{margin:4px 0 12px;max-width:65ch;color:var(--secondary);font-size:.875rem;overflow-wrap:anywhere}
+html:root body[data-route=presets] .preset-voice-players{display:grid;grid-template-columns:repeat(2,minmax(0,300px));gap:12px}
+html:root body[data-route=presets] .preset-voice-players label,html:root body[data-route=presets] .preset-timing-fields label{display:grid;gap:6px;font-size:.8125rem;font-weight:600;min-width:0}
+html:root body[data-route=presets] .preset-voice-players audio{width:100%;height:40px}
+html:root body[data-route=presets] .preset-timing-fields{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:14px 0 8px}
+html:root body[data-route=presets] .preset-timing-fields input{width:120px;min-height:40px;font-variant-numeric:tabular-nums}
+@media(max-width:520px){html:root body[data-route=presets] .preset-voice-players{grid-template-columns:minmax(0,1fr)}html:root body[data-route=presets] .preset-voice-bar label{width:100%}}
+
+/* Voice controls share the expanded motion row. */
+html:root body[data-route=presets] .preset-speech .preset-voice-timing{padding:12px 0;border-bottom:1px solid var(--border)}
+html:root body[data-route=presets] .preset-speech .preset-voice-choice{max-width:300px}
+html:root body[data-route=presets] .preset-speech .preset-voice-choice select{min-height:40px;width:100%}
+html:root body[data-route=presets] .preset-speech .preset-timing-fields label{max-width:220px;margin:0}
+html:root body[data-route=presets] .preset-speech .preset-timing-fields input[type=range]{width:180px;min-height:24px;padding:0}
+html:root body[data-route=presets] .preset-speech .preset-timing-fields input[type=number]{width:110px;min-height:40px}
+html:root body[data-route=presets] .preset-speech .preset-voice-players label{margin:0}
+html:root body[data-route=presets] .preset-voice-bar{display:block;padding:0 0 20px}
+html:root body[data-route=presets] .preset-character-header{display:flex;justify-content:space-between;align-items:start;gap:16px;flex-wrap:wrap}
+html:root body[data-route=presets] .preset-character-header h3{margin:0 0 4px;font-size:1rem}
+html:root body[data-route=presets] .preset-character-header p{margin:0}
+html:root body[data-route=presets] .preset-voice-bar .preset-voice-off{min-width:160px}
+html:root body[data-route=presets] .preset-character-help{margin:12px 0;color:var(--secondary);font-size:.8125rem}
+html:root body[data-route=presets] .preset-character-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+html:root body[data-route=presets] .preset-character{min-width:0;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+html:root body[data-route=presets] .preset-character-select{display:flex;align-items:center;gap:12px;width:100%;padding:8px;text-align:left;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);cursor:pointer}
+html:root body[data-route=presets] .preset-character-select[aria-pressed=true]{border-color:var(--blue);background:var(--surface-selected)}
+html:root body[data-route=presets] .preset-character-select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+html:root body[data-route=presets] .preset-character-avatar{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;background:var(--surface-subtle);border:1px solid var(--border);font-weight:700}
+html:root body[data-route=presets] .preset-character-copy{display:grid;gap:2px;min-width:0}
+html:root body[data-route=presets] .preset-character-copy small,html:root body[data-route=presets] .preset-character-note{color:var(--secondary);font-size:.75rem;line-height:1.4}
+html:root body[data-route=presets] .preset-character-marker{font-size:.75rem;font-weight:600;color:var(--blue)}
+html:root body[data-route=presets] .preset-character audio{display:block;width:100%;height:40px;margin-top:8px}
+html:root body[data-route=presets] .preset-character audio[hidden]{display:none}
+html:root body[data-route=presets] .preset-character-note{margin:8px 4px 0}
+@media(max-width:850px){html:root body[data-route=presets] .preset-character-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)}}

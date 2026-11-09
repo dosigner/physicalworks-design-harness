@@ -1,11 +1,19 @@
 # CLAUDE.md — PhysicalWorks v5 Design System & Opus 5.5 Harness
 
+## 0. User Preference First (Double Diamond Rounds)
+
+Before and during every design change, run [`.agents/skills/design-double-diamond/SKILL.md`](.agents/skills/design-double-diamond/SKILL.md) (Claude Code also finds it in `.claude/skills/`):
+- Each round: render HTML options with `design_round.mjs render`, ask the user with one AskUserQuestion call (every option has a `preview`), record the answer with `design_round.mjs record`.
+- Run Discover → Define → Develop → Deliver. If the user rejects a Deliver round or asks for changes, run a new Develop and Deliver round. Do not finish until a Deliver round is approved.
+- Approved decisions are CSS assertions; `verify_v5_harness.mjs` fails with `DECISION_NOT_APPLIED` until the target CSS matches them.
+- Gates read the target files from `harness.config.json`. Only a human edits that file after it exists.
+
 ## 1. Authoritative Design System (`DESIGN.md`)
 
 All frontend, dashboard, and cross-platform porting work MUST strictly follow [`DESIGN.md`](DESIGN.md):
 
 1. **Navigation Architecture (Top = Status Only, Left Rail = All Navigation)**:
-   - **Top Header (`.app-header`) & Context Bar (`.context-bar`)**: Strictly reserved for brand identity (`.brand`), live connection/battery/SSH/camera status (`#connectButton` popover + `.status-summary`), and theme toggle (`#themeToggle`). **Never place route links, GNB menus, or page switchers in top bars.**
+   - **Top Header (`.app-header`) & Context Bar (`.context-bar`)**: Strictly reserved for brand identity (`.brand`), live status indicators (for example a `#connectButton` status popover and a `.status-summary` strip; the exact IDs are `header.requiredIds` in `harness.config.json`), and theme toggle (`#themeToggle`). **Never place route links, GNB menus, or page switchers in top bars.**
    - **Left Hover-Reveal Rail (`aside#navigation`)**: All primary route and module navigation MUST reside in the left rail (`64px` collapsed icon rail ↔ `240px` expanded sidebar on hover/focus).
    - **Local View Switchers (`.segmented`)**: In-panel view toggles (`2D`/`3D`, `Editor`/`Executions`) MUST use compact `.segmented` controls inside `.panel-head` or `.toolbar`.
 2. **Left Rail 7-Point Physics Contract**:
@@ -28,6 +36,7 @@ All frontend, dashboard, and cross-platform porting work MUST strictly follow [`
 ## 2. Active Skills & Verification Pipeline
 
 Load the appropriate skill before starting specialized work:
+- **User Preference Rounds (Double Diamond)**: [`.agents/skills/design-double-diamond/SKILL.md`](.agents/skills/design-double-diamond/SKILL.md)
 - **Design System & Left Rail Porting/Auditing**: [`.agents/skills/x2-v5-console-harness/SKILL.md`](.agents/skills/x2-v5-console-harness/SKILL.md)
 - **Anti-Slop & WCAG 2.2 AA Gate**: [`.agents/skills/impeccable-anti-slop/SKILL.md`](.agents/skills/impeccable-anti-slop/SKILL.md)
 - **Apple HIG Ergonomics & Modality**: [`.agents/skills/apple-design-system/SKILL.md`](.agents/skills/apple-design-system/SKILL.md)

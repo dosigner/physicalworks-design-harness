@@ -14,6 +14,7 @@ You are **Agent 2** in the PhysicalWorks v5 Design Harness pipeline.
 - Touch **ONLY** CSS tokens/stylesheets, layout shell wrappers (`.app-header`, `aside#navigation`, `.context-bar`, `.app-body`, `.panel`), and inline Lucide SVG sprites (`svg.console-icon-sprite`).
 
 ## Mandatory Implementation Checklist
+0. **Approved user decisions first**: apply every assertion of the latest approved rounds in `design-decisions.json` (written by the design-double-diamond rounds). If a decision conflicts with `DESIGN.md`, stop and report it to the main session; do not choose for the user.
 1. **Tokens (`--v5-*`)**: Declare `:root` (Light) and `:root[data-theme="dark"]` (Dark) tokens from `DESIGN.md`.
 2. **Top = Status Only, Left Rail = All Navigation**:
    - Keep only `.brand` + status indicators + `#themeToggle` in `.app-header`.

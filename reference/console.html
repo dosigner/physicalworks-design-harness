@@ -7,14 +7,11 @@
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="X2 로봇의 관측 기록, 좌표계, 지도와 알고리즘 실험을 함께 검토하는 로컬 콘솔">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/console.css">
-  <link rel="stylesheet" href="/locomotion.css">
-  <link rel="stylesheet" href="/lab.css">
-  <link rel="stylesheet" href="/upper_body.css">
-  <link rel="stylesheet" href="/flow_n8n.css">
-  <link rel="stylesheet" href="/physicalworks_v5.css">
+  <!-- Standalone reference: open this file through any static server (for example `npx serve reference`). -->
+  <link rel="stylesheet" href="./console.css">
+  <link rel="stylesheet" href="./physicalworks_v5.css">
   <title>X2 관제 및 실험 콘솔</title>
-  <script type="module" src="/console.js"></script>
+  <script type="module" src="./nav-hover-contract.js"></script>
 </head>
 <body data-mode="loading">
   <!-- Lucide source and license: assets/workflow/NOTICE.md. -->
@@ -168,7 +165,13 @@
   </header>
   <aside class="navigation" id="navigation" aria-label="주 탐색">
     <div class="nav-scroll">
-      <nav id="navItems"></nav>
+      <nav id="navItems">
+        <a class="nav-link" href="#overview" data-route="overview" aria-current="page"><svg class="lucide-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#x2-lucide-layout-dashboard"/></svg><span class="nav-label">운용 개요</span></a>
+        <a class="nav-link" href="#sessions" data-route="sessions"><svg class="lucide-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#x2-lucide-activity"/></svg><span class="nav-label">실시간 관측</span></a>
+        <a class="nav-link" href="#map" data-route="map"><svg class="lucide-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#x2-lucide-map"/></svg><span class="nav-label">지도와 위치</span></a>
+        <a class="nav-link" href="#flow" data-route="flow"><svg class="lucide-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#x2-lucide-workflow"/></svg><span class="nav-label">동작 흐름</span></a>
+        <a class="nav-link" href="#settings" data-route="settings"><svg class="lucide-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#x2-lucide-sliders-horizontal"/></svg><span class="nav-label">설정</span></a>
+      </nav>
       <div class="nav-footer"><span class="status-dot"></span><strong id="environmentLabel">서버 확인 중</strong><p id="collectorStatus">실기기 수신 상태 확인 중</p><span class="version">Console 0.1.0 / AimDK 1.0.0 기준</span></div>
     </div>
   </aside>
@@ -194,7 +197,20 @@
     <main id="workspace" tabindex="-1">
       <div class="page-heading"><div><h1 id="pageTitle">운용 개요</h1><p id="pageDescription">선택한 기록의 상태와 유효 여부를 확인합니다.</p></div><button class="button secondary compact" id="exportSession">세션 내보내기<svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="download" aria-hidden="true" focusable="false"><use href="#x2-lucide-download"/></svg></button></div>
       <div class="source-notice" id="sourceNotice"><span class="tag warning">연결 없음</span><p>로컬 기록만 확인합니다. 로봇에 명령을 보내지 않습니다.</p></div>
-      <div id="pageContent"><div class="loading-state" role="status"><span class="skeleton"></span><p>세션 목록과 데이터 형식을 확인하고 있습니다.</p></div></div>
+      <div id="pageContent">
+        <section class="panel" aria-labelledby="sampleMapTitle">
+          <div class="panel-head">
+            <div><h2 id="sampleMapTitle">공간 보기</h2><p>패널 내부 보기 전환은 .panel-head 안의 .segmented로 둡니다.</p></div>
+            <div class="segmented" role="group" aria-label="공간 보기 전환"><button type="button" aria-pressed="true">2D</button><button type="button" aria-pressed="false">3D</button></div>
+          </div>
+          <div class="bento">
+            <div><span class="field-label">위치 오차</span><strong class="number">0.042 m</strong></div>
+            <div><span class="field-label">수신 주기</span><strong class="number">50 Hz</strong></div>
+            <div><span class="field-label">배터리</span><strong class="number">86 %</strong></div>
+            <div><span class="field-label">지연</span><strong class="number">18 ms</strong></div>
+          </div>
+        </section>
+      </div>
     </main>
     <footer class="replay-dock" id="replayDock" aria-label="공통 세션 재생" hidden>
       <div class="replay-controls"><button class="icon-button" id="previousFrame" aria-label="이전 프레임"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="skip-back" aria-hidden="true" focusable="false"><use href="#x2-lucide-skip-back"/></svg></button><button class="icon-button play-button" id="playPause" aria-label="재생"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="play" aria-hidden="true" focusable="false"><use href="#x2-lucide-play"/></svg></button><button class="icon-button" id="nextFrame" aria-label="다음 프레임"><svg viewBox="0 0 24 24" class="lucide-icon" data-lucide="skip-forward" aria-hidden="true" focusable="false"><use href="#x2-lucide-skip-forward"/></svg></button></div>

@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs\" --plugin",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs\" --plugin",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/.agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs\" --plugin",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

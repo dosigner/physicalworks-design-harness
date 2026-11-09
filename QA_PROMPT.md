@@ -15,8 +15,9 @@
 
 # 1. 필수 실행 검증 (Deterministic Automated Checks)
 먼저 아래 명령들을 실행하여 정량적/기계적 통과 여부를 확인하라:
-1. `node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs`
-2. `node .agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs`
+0. 프로젝트 루트의 `harness.config.json`을 읽어 검사 대상(`html`, `css`, `js`)이 이 프로젝트의 실제 셸 파일인지 확인하라. 비어 있거나 번들 `reference/`를 가리키면 ①의 자가 치유 루프 항목은 0점이다.
+1. `node .agents/skills/x2-v5-console-harness/scripts/verify_v5_harness.mjs` (Claude Code 플러그인 설치라면 플러그인 경로의 같은 스크립트를 `--root .`로 실행)
+2. `git diff --name-only`의 모든 경로를 `node .agents/skills/x2-v5-console-harness/scripts/guard_core_freeze.mjs <path...>`에 넣어 exit `0`인지 확인하라. 인자 없이 실행하면 아무것도 검사하지 않는다.
 3. `git status -s` 및 `git diff --stat` (기존 비즈니스 로직·API·스토어·라우터 파일 변경이 0건인지 확인)
 
 ---
@@ -27,9 +28,9 @@
 
 ### ① Core-Freeze & Harness Architecture 완성도 (25점)
 - [ ] **코어/기능 불변성 (10점)**: 백엔드/API/상태 관리/비즈니스 이벤트 핸들러 및 기존 DOM `id`/`data-*` 바인딩이 단 1줄도 훼손·추가·삭제되지 않았는가?
-- [ ] **PreToolUse 하드 블로커 (5점)**: `.claude/settings.json`에 `guard_core_freeze.mjs`가 `PreToolUse` 훅(Exit Code `2` 차단)으로 정상 연결되어 있는가?
+- [ ] **PreToolUse 하드 블로커 (5점)**: `.claude/settings.json`(또는 플러그인 `hooks/hooks.json`), `.codex/hooks.json`, `.gemini/settings.json`에 `guard_core_freeze.mjs`가 PreToolUse/BeforeTool 훅(Exit Code `2` 차단)으로 연결되어 있고, matcher가 Bash와 `apply_patch`를 포함하며, 명령이 `$CLAUDE_PROJECT_DIR` 같은 절대 경로를 쓰는가?
 - [ ] **3-Agent 권한 분리 오케스트레이션 (5점)**: `.claude/agents/`의 `1-core-contract-mapper`(Read-Only) → `2-v5-shell-and-rail-surgeon`(UI/CSS 전용) → `3-harness-gatekeeper`(검증 전용) 파이프라인과 도구 권한(`tools:`)이 분리되어 있는가?
-- [ ] **PostToolUse / Stop 자가 치유 루프 (5점)**: 수정 직후 및 턴 종료 시 `verify_v5_harness.mjs`가 자동 실행되는가?
+- [ ] **PostToolUse / Stop 자가 치유 루프 (5점)**: 수정 직후 및 턴 종료 시 `verify_v5_harness.mjs --hook`이 자동 실행되고, 실패 시 Exit Code `2`로 에이전트에게 결과를 돌려주는가?
 
 ### ② 상단 Status 전용 & 좌측 내비게이션 단일화 (20점)
 - [ ] **상단 헤더 순수성 (10점)**: `.app-header` 안에 페이지 이동 링크(Top GNB, 탭 메뉴, 브레드크럼)가 0개이며, 오직 `.brand` + 실시간 Status(`#connectButton`, `.status-summary`) + `#themeToggle`만 존재하는가?
